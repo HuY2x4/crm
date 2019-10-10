@@ -1,0 +1,38 @@
+<%
+'客户档案表 Client
+L_Client_cId="编号" 
+L_Client_cDate="录入时间" 
+L_Client_cCompany="公司名称" 
+L_Client_cArea="省份" 
+L_Client_cSquare="地区" 
+L_Client_cAddress="详细地址" 
+L_Client_cZip="邮编" 
+L_Client_cLinkman="联系人" 
+L_Client_cWechat="微信号" 'add  by Bob
+L_Client_cPosition="具体职位" 'add by Bob
+L_Client_cZhiwei="职位" 
+L_Client_cMobile="手机号码" 
+L_Client_cTel="联系电话" 
+L_Client_cFax="传真号码" 
+L_Client_cHomepage="企业网站" 
+L_Client_cEmail="电子邮件" 
+L_Client_cTrade="产品分类" 
+L_Client_cStrade="产品小类" 
+L_Client_cType="客户类型" 
+L_Client_cStart="客户级别" 
+L_Client_cSource="客户来源" 
+L_Client_cIndustry="客户行业" 'add by Bob
+L_Client_cInfo="主营项目" 
+L_Client_cBeizhu="备注其它" 
+L_Client_cUser="业务员" 
+L_Client_cGroup="部门" 
+L_Client_cOldUser="申请人" 
+L_Client_cLastUpdated="最后更新" 
+L_Client_cShare="是否共享" 
+L_Client_cRNextTime="下次跟进" 
+L_Client_cOEDate="交付订单" 
+L_Client_cHEdate="合同到期" 
+L_Client_cHMoney="总金额" 
+L_Client_cHOwed="总欠款" 
+L_Client_cSNum="售后次数" 
+%>
