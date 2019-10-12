@@ -301,7 +301,8 @@ Set rss = Nothing
 							<%
 							PN = CLng(ABS(Request("PN")))
 							If Not IsNumeric(PN) Or PN <= 0 Then PN = 1
-							intPageSize = DataPageSize
+                            '根据需求由由DataPageSize改为1000
+							intPageSize = 1000
 							pagenum = intPageSize*(PN-1)
 							Set rs = Server.CreateObject("ADODB.Recordset")
 							'根据需求由根据id排序改为根据联系时间排序
@@ -430,7 +431,7 @@ Next
 								<%end if%>
 								<td class="td_l_c"><% If mid(Session("CRM_qx"), 28, 1) = 1 Then %><input type="button" class="button_info_edit" value=" " title="<%=L_Edit%>"  onclick='Records_InfoEdit<%=rs("rId")%>()' style="cursor:pointer" /><%end if%> <% If mid(Session("CRM_qx"), 29, 1) = 1 Then %><input type="button" class="button_info_del" value=" " title="<%=L_Del%>" onclick='Records_InfoDel<%=rs("rId")%>()' style="cursor:pointer" /><%end if%></td>
 							</tr>
-							<script>function Records_InfoView<%=rs("cId")%>() {$.dialog.open('GetUpdate.asp?action=Client&sType=InfoView&otype=Records&cId=<%=rs("cId")%>', {title: '查看', width: 900,height: 480, fixed: true}); };</script>
+							<script>function Records_InfoView<%=rs("cId")%>() {$.dialog.open('GetUpdate.asp?action=Client&sType=InfoView&otype=Records&cId=<%=rs("cId")%>', {title: '查看', width: 900,height: 580, fixed: true}); };//根据需求，由480高度改到580</script>
 							<script>function Records_InfoEdit<%=rs("rId")%>() {$.dialog.open('GetUpdateRW.asp?action=Records&sType=Edit&Id=<%=rs("rId")%>', {title: '编辑', width: 800,height: 340, fixed: true}); };</script>
 							<script>function Records_InfoDel<%=rs("rId")%>(){art.dialog({content: '<%=Alert_del_YN%>',icon: 'error',ok: function () {
 								<%if YnDelReason = 1 then%> 
