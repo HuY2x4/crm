@@ -266,7 +266,7 @@ Class EasyCRM_CRM
 		strSelect = strSelect & "</select>"
 		getSelect = strSelect
 	End Function
- 
+
 	Function getNewSelect(sTable,sValue,sName,sql,sInfo)
 		Dim strSelect
 		Dim rs
@@ -286,6 +286,28 @@ Class EasyCRM_CRM
 		Set rs = Nothing
 		strSelect = strSelect & "</select>"
 		getNewSelect = strSelect
+	End Function
+
+    '读取来源下拉框（加上了onchange（20191014的需求(当下拉框选择其他的时候，出现一个input选填
+	Function getSelectWithInput(sTable,sValue,sName,sInfo)
+		Dim strSelect
+		Dim rs
+		strSelect = "<select name="""&sName&""" id="""&sValue&""" onchange='setSourceDetail(this.options[this.selectedIndex].value)'>"
+		strSelect = strSelect & "<option value="""">"&l_Select&"</option>"
+		Set rs = Server.CreateObject("ADODB.Recordset")
+		rs.Open "Select * From [" & sTable & "] where "&sValue&"<>'' and "&sValue&"<>'Null' ",conn,1,1
+		Do While Not rs.BOF And Not rs.EOF
+			if rs(sValue) = ""&sInfo&"" then
+				strSelect = strSelect & "<option value="""&rs(sValue)&""" selected>"&rs(sValue)&"</option>" 
+			else
+				strSelect = strSelect & "<option value="""&rs(sValue)&""">"&rs(sValue)&"</option>" 
+			end if
+			rs.MoveNext
+		Loop
+		rs.Close
+		Set rs = Nothing
+		strSelect = strSelect & "</select>"
+		getSelectWithInput = strSelect
 	End Function
  
 	'读取按钮radio

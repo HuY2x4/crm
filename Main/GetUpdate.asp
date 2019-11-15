@@ -125,7 +125,6 @@ if sType="Add" then '添加
 										<select name="Squares">
 											<option value=""><%=L_Please_choose_02%></option>
 										</select>
-										
 									</span>　
 								<input name="Square" type="hidden" id="Square" class="int">
 								<input name="Address" type="text" class="int" id="Address" size="30">　
@@ -189,14 +188,30 @@ if sType="Add" then '添加
 							-->
 								</tr>
 							<tr> 
-								<td class="td_l_r title" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cStart = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cStart%></td>
-								<td class="td_r_l" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Star","Start","") %>&nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Star_InfoAdd()' style="cursor:pointer"><script>function Select_Star_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Star', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
 								<td class="td_l_r title" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cSource = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cSource%></td>
-								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Source","Source","") %>&nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Source_InfoAdd()' style="cursor:pointer"><script>function Select_Source_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Source', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > 
+                                    <% = EasyCrm.getSelectWithInput("SelectData","Select_Source","Source","") %>
+                                    <input name="Source_Detail" id="Select_Source_Detail" style="margin-left:10px;display:none" placeholder="请输入来源详情"></input>
+                                    &nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %>
+                                    <input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Source_InfoAdd()' style="cursor:pointer"><script>function Select_Source_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Source', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+                                <script>
+                                    //新功能：当下拉框点击其他的时候，后面会出现输入框
+                                    function setSourceDetail(value) {
+                                        const docInput = document.getElementById("Select_Source_Detail");
+                                        if (value === " 其它"||value === "其它") {
+                                            docInput.setAttribute("style","display:inline-block;margin-left:10px;");
+                                        }
+                                        else{
+                                            docInput.setAttribute("style","display:none");
+                                        }
+                                     }
+                                </script>
 							</tr>
 								<tr>
 								<td class="td_l_r title"><%if Must_Client_cIndustry = 1 then %><font color="#FF0000">*</font> <%end if%><%=L_Client_cIndustry %></td>
-								<td class="td_r_l" colspan="3"><% = EasyCrm.getSelect("SelectData","Select_Industry","Industry","") %>&nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Industry_InfoAdd()' style="cursor:pointer"><script>function Select_Industry_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Industry', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+								<td class="td_r_l" ><% = EasyCrm.getSelect("SelectData","Select_Industry","Industry","") %>&nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Industry_InfoAdd()' style="cursor:pointer"><script>function Select_Industry_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Industry', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+                                <td class="td_l_r title" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cStart = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cStart%></td>
+								<td class="td_r_l" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Star","Start","") %>&nbsp;<% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Button1" class="button227" value="新增" onclick='Select_Star_InfoAdd()' style="cursor:pointer"><script>function Select_Star_InfoAdd() { $.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Star', { title: '新窗口', width: 400, height: 140, fixed: true }); };</script><%end if%></td>
 							</tr>
 								<%
 								Set rss = Server.CreateObject("ADODB.Recordset")
@@ -297,6 +312,7 @@ elseif sType="SaveAdd" then
 	cType = Trim(Request("Type"))
 	cStart = Trim(Request("Start"))
 	cSource = Trim(Request("Source"))    
+    cSourceDetail = Trim(Request("Source_Detail")) '新加的  
 	cInfo = Trim(Request("Info"))
 	cBeizhu = Trim(Request("Beizhu"))
 	cUser = Trim(Request("User"))
@@ -351,6 +367,7 @@ elseif sType="SaveAdd" then
 	rs("cType") = cType
 	rs("cStart") = cStart
 	rs("cSource") = cSource
+    rs("cSourceDetail") = cSourceDetail '新加的 
 	rs("cInfo") = cInfo
 	rs("cBeizhu") = cBeizhu
 	rs("cUser") = cUser
@@ -549,14 +566,32 @@ elseif sType="InfoEdit" then
 							-->
 							</tr>
 							<tr> 
-								<td class="td_l_r title" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cStart = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cStart%></td>
-								<td class="td_r_l" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Star","Start",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cStart")&"") %> <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Star_InfoAdd()' style="cursor:pointer"><script>function Select_Star_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Star', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
 								<td class="td_l_r title" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cSource = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cSource%></td>
-								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Source","Source",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cSource")&"") %> <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Source_InfoAdd()' style="cursor:pointer"><script>function Select_Source_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Source', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
-							</tr>
+								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > 
+                                <% = EasyCrm.getSelectWithInput("SelectData","Select_Source","Source",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cSource")&"") %> 
+                                 <input name="Source_Detail" id="Select_Source_Detail" <%if EasyCrm.getNewItem("Client","cID",""&cID&"","cSource")<>"其它" then%>style="margin-left:10px; display:none"<%end if%>  placeholder="请输入来源详情" value="<%=EasyCrm.getNewItem("Client","cID",""&cID&"","cSourceDetail")%>"></input>
+                                <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Source_InfoAdd()' style="cursor:pointer"><script>function Select_Source_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Source', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+							    <script>
+                                    //新功能：当下拉框点击其他的时候，后面会出现输入框
+                                    function setSourceDetail(value) {
+                                        const docInput = document.getElementById("Select_Source_Detail");
+                                        if (value === " 其它"||value === "其它") {
+                                            docInput.setAttribute("style","display:inline-block;margin-left:10px;");
+                                        }
+                                        else{
+                                            docInput.setAttribute("style","display:none");
+                                        }
+                                        const dom = EasyCrm.UserList(1,"User",Session("Search_Client_cUser"));
+                                        console.log("dom2");
+                                        console.log("dom2:",dom);
+                                     }
+                                </script>
+                            </tr>
 							<tr>
 								<td class="td_l_r title"><%if Must_Client_cIndustry = 1 then %><font color="#FF0000">*</font> <%end if%><%=L_Client_cIndustry %></td>
-								<td class="td_r_l" colspan="3"> <% = EasyCrm.getSelect("SelectData","Select_Industry","Industry",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cIndustry")&"") %> <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Industry_InfoAdd()' style="cursor:pointer"><script>function Select_Industry_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Industry', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+								<td class="td_r_l" > <% = EasyCrm.getSelect("SelectData","Select_Industry","Industry",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cIndustry")&"") %> <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Back" class="button227" value="新增" onclick='Select_Industry_InfoAdd()' style="cursor:pointer"><script>function Select_Industry_InfoAdd() {$.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Industry', {title: '新窗口', width: 400, height: 140,fixed: true}); };</script><%end if%></td>
+                                <td class="td_l_r title" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> ><%if Must_Client_cStart = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Client_cStart%></td>
+								<td class="td_r_l" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> > <% = EasyCrm.getSelect("SelectData","Select_Star","Start",""&EasyCrm.getNewItem("Client","cID",""&cID&"","cStart")&"") %> <% If mid(Session("CRM_qx"), 6, 1) = 1 Then %><input name="Back" type="button" id="Button2" class="button227" value="新增" onclick='Select_Star_InfoAdd()' style="cursor:pointer"><script>function Select_Star_InfoAdd() { $.dialog.open('../System/GetUpdate.asp?action=SelectData&sType=Add&oType=Select_Star', { title: '新窗口', width: 400, height: 140, fixed: true }); };</script><%end if%></td>
 							</tr>
 							<%
 								cContentStr = EasyCrm.getNewItem("CustomFieldContent","cID",""&cID&" and rID is null and oID is null and sID is null and hID is null and eID is null ","cContent")
@@ -750,6 +785,7 @@ elseif sType="SaveEdit" then
 	cSource = Trim(Request("Source"))    
 	cInfo = Trim(Request("Info"))
 	cBeizhu = Trim(Request("Beizhu"))
+    cSourceDetail = Trim(Request("Source_Detail")) '新加的
 
 	OnlyItem=""
 	if ClientOnly = "100" then
@@ -799,6 +835,7 @@ elseif sType="SaveEdit" then
 	rs("cType") = cType
 	rs("cStart") = cStart
 	rs("cSource") = cSource
+    rs("cSourceDetail") = cSourceDetail '新加的
 	rs("cInfo") = cInfo
 	rs("cBeizhu") = cBeizhu
 	rs("cLastUpdated") = now()
@@ -978,7 +1015,7 @@ elseif sType="InfoView" then
 								<td class="td_l_r title" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> ><%=L_Client_cStart%></td>
 								<td class="td_r_l" <%if Hidden_Client_cStart=1 then%>style="display:none;"<%end if%> > <%=EasyCrm.getNewItem("Client","cID",""&cID&"","cStart")%> </td>
 								<td class="td_l_r title" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> ><%=L_Client_cSource%></td>
-								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > <%=EasyCrm.getNewItem("Client","cID",""&cID&"","cSource")%> </td>
+								<td class="td_r_l" <%if Hidden_Client_cSource=1 then%>style="display:none;"<%end if%> > <%=EasyCrm.getNewItem("Client","cID",""&cID&"","cSource")%> &nbsp;<%=EasyCrm.getNewItem("Client","cID",""&cID&"","cSourceDetail")%>  </td>
 							</tr>
 							<tr>
 								<td class="td_l_r title"><%=L_Client_cIndustry %></td>

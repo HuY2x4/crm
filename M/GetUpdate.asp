@@ -1401,6 +1401,54 @@ elseif sType="View" then
 						<label class="st-label"><%if Must_Records_rContent = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Records_rContent%></label>
 						<textarea name="rContent" id="rContent" class="int" style="width:80%;"></textarea>
                     </div>
+
+
+                    <%
+						Set rss = Server.CreateObject("ADODB.Recordset")
+						rss.Open "Select * From [CustomField] where cTable='Records' order by Id asc ",conn,3,1
+						If rss.RecordCount > 0 Then
+						Do While Not rss.BOF And Not rss.EOF
+					%>
+                    <div class="form-line">
+						<label class="st-label"><%=rss("cTitle")%></label>
+						<%if rss("cType") = "text" then%>
+						<input name="<%=rss("cName")%>" type="text" id="Text1" class="int" style="width:<%=rss("cWidth")%>px" value="">
+						<%elseif rss("cType") = "time" then%>
+						<input name="<%=rss("cName")%>" type="text" id="Text2" class="Wdate" style="width:<%=rss("cWidth")%>px" onFocus="WdatePicker()" value="" />
+						<%elseif rss("cType") = "select" then%>
+						<select name="<%=rss("cName")%>" class="int" style="width:<%=rss("cWidth")%>px">
+							<option value=""><%=L_Select%></option>
+							<%
+							selectstr = split(""&rss("cContent")&"",",")
+							for selectarr = 0 to ubound(selectstr)
+							response.Write "<option value="""&selectstr(selectarr)&""">"&selectstr(selectarr)&"</option>"
+							next
+							%>
+						</select>
+						<%elseif rss("cType") = "checkbox" then%>
+						<%
+							checkboxstr = split(""&rss("cContent")&"",",")
+							for checkboxarr = 0 to ubound(checkboxstr)
+							response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+							next
+						%>
+						<%elseif rss("cType") = "radio" then%>
+						<%
+							radiostr = split(""&rss("cContent")&"",",")
+							for radioarr = 0 to ubound(radiostr)
+							response.Write "<input name="""&rss("cName")&""" type=""radio"" value="""&radiostr(radioarr)&"""> "&radiostr(radioarr)&"　"
+							next
+						%>
+						<%end if%>
+                    </div>
+					
+					<%
+						rss.MoveNext
+						Loop
+						end if
+						rss.Close
+						Set rss = Nothing
+					%>
                     
                     <div class="form-line">
 					<input name="cID" type="hidden" value="<%=cID%>">
@@ -1418,6 +1466,7 @@ elseif sType="View" then
 				rState = Request("rState")
 				rlinkman = Request("rlinkman")
 				rNextTime = Request("rNextTime")
+                rVisitTime = Request("rVisitTime")
 				rRemind = Request("rRemind")
 				rContent = Request("rContent")
 				rUser = Request("rUser")
@@ -1433,6 +1482,9 @@ elseif sType="View" then
 				if rNextTime <>"" then
 				rs("rNextTime") = rNextTime
 				end if
+                if rVisitTime <>"" then
+				rs("rVisitTime") = rVisitTime
+				end if
 				if rRemind <>"" then
 				rs("rRemind") = rRemind
 				else
@@ -1444,6 +1496,35 @@ elseif sType="View" then
 				rs.Update
 				rs.Close
 				Set rs = Nothing
+
+              
+
+	            Set rsid = Server.CreateObject("ADODB.Recordset")
+	            if Accsql = 0 then
+	            rsid.Open "Select top 1 rID From [Records] order by rID desc",conn,1,1
+	            elseif Accsql = 1 then
+	            rsid.Open "Select @@IDENTITY as rID From [Records]",conn,1,1
+	            end if
+	            rID=rsid("rID")
+	            rsid.close
+	
+	            '插入自定义内容
+	
+	            cContent = ""
+	            Set rsc = Server.CreateObject("ADODB.Recordset")
+	            rsc.Open "Select * From [CustomField] where cTable='Records' order by Id asc ",conn,1,1
+	            If rsc.RecordCount > 0 Then
+	            Do While Not rsc.BOF And Not rsc.EOF
+	
+	            cContent = cContent & rsc("cName") &":"& Trim(Request(rsc("cName"))) &"|"
+	
+	            rsc.MoveNext
+	            Loop
+	            end if
+	            rsc.Close
+	            Set rsc = Nothing
+	
+	            conn.execute ("insert into CustomFieldContent(cID,rID,cContent) values('"&cid&"','"&rID&"','"&cContent&"')")	
 		
 				'同步更新客户类型和插入定时站内信
 				
@@ -1458,9 +1539,11 @@ elseif sType="View" then
 				end if
 		
 				conn.execute("update [Client] set cLastUpdated = '"&Now()&"' where cId = "&cId&" ")
+
 				'插入操作记录
 				conn.execute ("insert into Logfile(lCid,lClass,lAction,lUser,lTime) values('"&cid&"','"&L_Records&"','"&L_insert_action_01&"','"&Session("CRM_name")&"','"&now()&"')")
 				Response.Write("<script>location.href='?action=Client&sType=View&otype=Records&cid="&cid&"' ;</script>")
+
 			
 			%>
 			<%elseif otype="RecordsEdit" then%>
@@ -1498,6 +1581,108 @@ elseif sType="View" then
 						<label class="st-label"><%if Must_Records_rContent = 1 then %><font color="#FF0000">*</font> <%end if%> <%=L_Records_rContent%></label>
 						<textarea name="rContent" id="rContent" class="int" style="width:80%;"><%=EasyCrm.getNewItem("Records","rID",""&ID&"","rContent")%></textarea>
                     </div>
+
+                    <%
+								cContentStr = EasyCrm.getNewItem("CustomFieldContent","cID"," "&EasyCrm.getNewItem("Records","rID",""&ID&"","cID")&" And rID = "&ID&" ","cContent")
+								cContentArr = split(cContentStr,"|")								
+								Set rss = Server.CreateObject("ADODB.Recordset")
+								rss.Open "Select * From [CustomField] where cTable='Records' order by Id asc ",conn,1,1
+								If rss.RecordCount > 0 Then
+								k=0
+								Do While Not rss.BOF And Not rss.EOF
+								if Ubound(cContentArr) > k then
+								cContent = split(cContentArr(k),":")
+					%>
+                    <div class="form-line">
+						<label class="st-label"><%=rss("cTitle")%></label>
+									<%if inStr(cContentArr(k),cContent(0))>0 then%>
+										<%if rss("cType") = "text" then%>
+										<input name="<%=rss("cName")%>" type="text" id="Text3" class="int" style="width:<%=rss("cWidth")%>px" value="<%=cContent(1)%>">
+										<%elseif rss("cType") = "time" then%>
+										<input name="<%=rss("cName")%>" type="text" id="Text4" class="Wdate" style="width:<%=rss("cWidth")%>px" onFocus="WdatePicker()" value="<%=cContent(1)%>" />
+										<%elseif rss("cType") = "select" then%>
+											<select name="<%=rss("cName")%>" class="int" style="width:<%=rss("cWidth")%>px">
+											<option value=""><%=L_Select%></option>
+											<%
+											selectstr = split(""&rss("cContent")&"",",")
+											for selectarr = 0 to ubound(selectstr)
+											if selectstr(selectarr) = cContent(1) then
+											response.Write "<option value="""&selectstr(selectarr)&""" selected>"&selectstr(selectarr)&"</option>"
+											else
+											response.Write "<option value="""&selectstr(selectarr)&""">"&selectstr(selectarr)&"</option>"
+											end if
+											next
+											%>
+											</select>
+										<%elseif rss("cType") = "checkbox" then%>
+											<%
+											checkboxstr = split(""&rss("cContent")&"",",")
+											for checkboxarr = 0 to ubound(checkboxstr)
+											if inStr(cContent(1),checkboxstr(checkboxarr))>0 then
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"　"
+											else
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											end if
+											next
+											%>
+										<%elseif rss("cType") = "radio" then%>
+											<%
+											radiostr = split(""&rss("cContent")&"",",")
+											for radioarr = 0 to ubound(radiostr)
+											if radiostr(radioarr) = cContent(1) then
+											response.Write "<input name="""&rss("cName")&""" type=""radio"" value="""&radiostr(radioarr)&""" checked> "&radiostr(radioarr)&"　"
+											else
+											response.Write "<input name="""&rss("cName")&""" type=""radio"" value="""&radiostr(radioarr)&"""> "&radiostr(radioarr)&"　"
+											end if
+											next
+											%>
+										<%end if%>
+									<%end if%>
+                    </div>
+								<%
+								else
+								%>
+                    <div class="form-line">
+						<label class="st-label"><%=rss("cTitle")%></label>
+									<%if rss("cType") = "text" then%>
+										<input name="<%=rss("cName")%>" type="text" id="Text5" class="int" style="width:<%=rss("cWidth")%>px" value="">
+										<%elseif rss("cType") = "time" then%>
+										<input name="<%=rss("cName")%>" type="text" id="Text6" class="Wdate" style="width:<%=rss("cWidth")%>px" onFocus="WdatePicker()" value="" />
+										<%elseif rss("cType") = "select" then%>
+											<select name="<%=rss("cName")%>" class="int" style="width:<%=rss("cWidth")%>px">
+											<option value=""><%=L_Select%></option>
+											<%
+											selectstr = split(""&rss("cContent")&"",",")
+											for selectarr = 0 to ubound(selectstr)
+											response.Write "<option value="""&selectstr(selectarr)&""">"&selectstr(selectarr)&"</option>"
+											next
+											%>
+											</select>
+										<%elseif rss("cType") = "checkbox" then%>
+											<%
+											checkboxstr = split(""&rss("cContent")&"",",")
+											for checkboxarr = 0 to ubound(checkboxstr)
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											next
+											%>
+										<%elseif rss("cType") = "radio" then%>
+											<%
+											radiostr = split(""&rss("cContent")&"",",")
+											for radioarr = 0 to ubound(radiostr)
+											response.Write "<input name="""&rss("cName")&""" type=""radio"" value="""&radiostr(radioarr)&"""> "&radiostr(radioarr)&"　"
+											next
+											%>
+										<%end if%>
+                    </div>
+								<%
+								end if
+								k=k+1
+								rss.MoveNext
+								Loop
+								end if
+								rss.Close
+								Set rss = Nothing
+							%>
                     
                     <div class="form-line">
 					<input name="rID" type="hidden" value="<%=ID%>">
@@ -1533,6 +1718,26 @@ elseif sType="View" then
 				rs.Update
 				rs.Close
 				Set rs = Nothing
+
+                '更新自定义内容
+	
+	            cContent = ""
+	            Set rsc = Server.CreateObject("ADODB.Recordset")
+	            rsc.Open "Select * From [CustomField] where cTable='Records' order by Id asc ",conn,3,1
+	            If rsc.RecordCount > 0 Then
+	            Do While Not rsc.BOF And Not rsc.EOF
+	            '获取所有自定义字段
+	            cContent = cContent & rsc("cName") &":"& Trim(Request(rsc("cName"))) &"|" 
+	            rsc.MoveNext
+	            Loop
+	            end if
+	            rsc.Close
+	            Set rsc = Nothing
+	            if EasyCrm.getNewItem("CustomFieldContent","cID",""&cID&" and rID="&rID&" ","cContent")="0" then
+	            conn.execute ("insert into CustomFieldContent(cID,rID,cContent) values('"&cid&"','"&rID&"','"&cContent&"')")	
+	            else
+	            conn.execute ("UPDATE [CustomFieldContent] SET cContent='"&cContent&"' Where cId ="&cId&" and rID="&rID&" ")
+	            end if
 		
 				'同步更新客户类型和插入定时站内信
 		

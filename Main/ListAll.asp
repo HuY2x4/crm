@@ -467,7 +467,7 @@ end if
 								
 									<td class="td_l_r title"><%=L_Client_cUser%></td>
 									<td class="td_r_l">
-                                        <%--这里根据需求要改成二级联动--%>
+                                        
 										<% If Session("CRM_level") = 9 Then %>
 										<% = EasyCrm.UserList(2,"User",Session("Search_Client_cUser")) %>　<%=L_Client_cGroup%>：<% = EasyCrm.getList(2,"system_group","gId","gName","Group",""&viewGroup&"") %>
 										<% Else %>
