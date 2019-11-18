@@ -414,7 +414,7 @@ Sub Records() '跟单记录
 											<%
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 											next
 											%>
 										<%elseif rss("cType") = "radio" then%>
@@ -618,9 +618,9 @@ Sub Records() '跟单记录
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
 											if checkboxstr(checkboxarr) = cContent(1) then
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"<br>"
 											else
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 											end if
 											next
 											%>
@@ -661,7 +661,7 @@ Sub Records() '跟单记录
 											<%
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br/>"
 											next
 											%>
 										<%elseif rss("cType") = "radio" then%>

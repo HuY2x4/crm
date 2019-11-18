@@ -246,7 +246,7 @@ if sType="Add" then '耶紗
 						<%
 							checkboxstr = split(""&rss("cContent")&"",",")
 							for checkboxarr = 0 to ubound(checkboxstr)
-							response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+							response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 							next
 						%>
 						<%elseif rss("cType") = "radio" then%>
@@ -605,9 +605,9 @@ elseif sType="InfoEdit" then
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
 											if inStr(cContent(1),checkboxstr(checkboxarr))>0 then
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"<br>"
 											else
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 											end if
 											next
 											%>
@@ -648,7 +648,7 @@ elseif sType="InfoEdit" then
 											<%
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br/>"
 											next
 											%>
 										<%elseif rss("cType") = "radio" then%>
@@ -1429,7 +1429,7 @@ elseif sType="View" then
 						<%
 							checkboxstr = split(""&rss("cContent")&"",",")
 							for checkboxarr = 0 to ubound(checkboxstr)
-							response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+							response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 							next
 						%>
 						<%elseif rss("cType") = "radio" then%>
@@ -1619,9 +1619,9 @@ elseif sType="View" then
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
 											if inStr(cContent(1),checkboxstr(checkboxarr))>0 then
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&""" checked> "&checkboxstr(checkboxarr)&"<br>"
 											else
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br>"
 											end if
 											next
 											%>
@@ -1662,7 +1662,7 @@ elseif sType="View" then
 											<%
 											checkboxstr = split(""&rss("cContent")&"",",")
 											for checkboxarr = 0 to ubound(checkboxstr)
-											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"　"
+											response.Write "<input name="""&rss("cName")&""" type=""checkbox"" value="""&checkboxstr(checkboxarr)&"""> "&checkboxstr(checkboxarr)&"<br/>"
 											next
 											%>
 										<%elseif rss("cType") = "radio" then%>
